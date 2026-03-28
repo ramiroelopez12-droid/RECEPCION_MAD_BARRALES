@@ -8,56 +8,104 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 :root {
-  --navy:      #3d4460; --navy-dk:   #2c3050; --navy-mid:  #4a5070;
-  --bg:        #eef0f5; --surface:   #ffffff; --border:    #c8ccd8;
-  --accent:    #5a6080; --accent-lt: #7a82a0; --text:      #1e2238;
-  --muted:     #6b7190; --chip-bg:   #e4e7f0; --green:     #3a7d5a;
-  --orange:    #b07820; --red:       #b03030; --shadow:    0 3px 16px rgba(30,34,56,0.13);
+  --navy:      #3d4460;
+  --navy-dk:   #2c3050;
+  --navy-mid:  #4a5070;
+  --bg:        #eef0f5;
+  --surface:   #ffffff;
+  --border:    #c8ccd8;
+  --accent:    #5a6080;
+  --accent-lt: #7a82a0;
+  --text:      #1e2238;
+  --muted:     #6b7190;
+  --chip-bg:   #e4e7f0;
+  --green:     #3a7d5a;
+  --orange:    #b07820;
+  --red:       #b03030;
+  --shadow:    0 3px 16px rgba(30,34,56,0.13);
   --radius:    14px;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: var(--bg); color: var(--text); font-family: 'Nunito', sans-serif; min-height: 100vh; padding-bottom: 50px; }
+
+/* HEADER */
 header { background: var(--navy); position: sticky; top: 0; z-index: 200; box-shadow: 0 3px 18px rgba(20,24,50,0.45); }
 .header-top { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid rgba(255,255,255,0.10); }
+.logo-wrap { display: flex; align-items: center; }
 .logo-img  { height: 52px; object-fit: contain; display: block; }
 .header-right { text-align: right; }
 .header-right .h-sub  { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.13em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
 .header-right .h-hora { font-size: 1rem; font-weight: 700; color: #fff; line-height: 1.2; }
 .header-right .h-fecha{ font-size: 0.68rem; color: rgba(255,255,255,0.5); }
+
+/* TABS */
 .tabs { display: flex; background: var(--navy-dk); }
-.tab-btn { flex: 1; border: none; background: none; padding: 10px 2px; font-family: 'Nunito', sans-serif; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: rgba(255,255,255,0.42); cursor: pointer; border-bottom: 3px solid transparent; }
+.tab-btn { flex: 1; border: none; background: none; padding: 10px 2px; font-family: 'Nunito', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: rgba(255,255,255,0.42); cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; -webkit-tap-highlight-color: transparent; line-height: 1.3; }
 .tab-btn.active { color: #fff; border-bottom-color: #fff; background: rgba(255,255,255,0.07); }
+
+/* CONTAINER */
 .container { max-width: 540px; margin: 0 auto; padding: 16px 13px 0; }
 .pane { display: none; }
 .pane.active { display: block; }
+
+/* CARD */
 .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 15px 14px; margin-bottom: 13px; box-shadow: var(--shadow); }
 .section-label { font-size: 0.63rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; display: flex; align-items: center; gap: 7px; }
 .section-label::before { content:''; display: inline-block; width: 3px; height: 12px; background: var(--navy); border-radius: 2px; }
+
+/* CHIPS */
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-.chip { background: var(--chip-bg); border: 1.5px solid var(--border); border-radius: 50px; padding: 8px 14px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.15s; color: var(--text); }
+.chip { background: var(--chip-bg); border: 1.5px solid var(--border); border-radius: 50px; padding: 8px 14px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.15s; color: var(--text); user-select: none; -webkit-tap-highlight-color: transparent; line-height: 1; }
+.chip:active { transform: scale(0.95); }
 .chip.sel { background: var(--navy); border-color: var(--navy); color: #fff; }
-.cdot { width: 13px; height: 13px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.2); display: inline-block; margin-right: 5px; vertical-align: middle; }
+.color-chip { display: flex; align-items: center; gap: 7px; }
+.cdot { width: 13px; height: 13px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.2); flex-shrink: 0; }
+.chip.est-b.sel { background: var(--green);  border-color: var(--green);  color:#fff; }
+.chip.est-r.sel { background: var(--orange); border-color: var(--orange); color:#fff; }
+.chip.est-m.sel { background: var(--red);    border-color: var(--red);    color:#fff; }
+
+/* INPUTS */
+.input-group label { display: block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
 input[type="number"], textarea { width: 100%; background: var(--chip-bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 11px 14px; font-family: 'Nunito', sans-serif; font-size: 1rem; color: var(--text); outline: none; }
+
+/* BTN PRINCIPAL */
 .btn-main { width: 100%; background: linear-gradient(135deg, var(--navy-mid) 0%, var(--navy-dk) 100%); color: #fff; border: none; border-radius: 12px; padding: 15px; font-family: 'Playfair Display', serif; font-size: 1.05rem; cursor: pointer; box-shadow: 0 4px 14px rgba(40,46,80,0.35); }
-.btn-main:disabled { background: var(--border); box-shadow: none; }
-.btn-xlsx { width: 100%; border: none; border-radius: 12px; padding: 15px; font-weight: 700; background: linear-gradient(135deg, #217346 0%, #185c37 100%); color: #fff; margin-top: 10px; }
+.btn-main:disabled { background: var(--border); color: var(--muted); box-shadow: none; }
+
+/* REGISTROS */
+.hist-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.hist-top h2 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--navy); }
+.badge { background: var(--navy); color: #fff; border-radius: 50px; padding: 3px 12px; font-size: 0.72rem; font-weight: 700; }
 .reg-item { border: 1px solid var(--border); border-radius: 11px; padding: 12px 14px; margin-bottom: 9px; background: var(--chip-bg); position: relative; }
-.reg-prod { font-weight: 700; font-size: 0.93rem; color: var(--navy); }
-.reg-detail { font-size: 0.77rem; color: var(--muted); }
+.reg-prod { font-weight: 700; font-size: 0.93rem; color: var(--navy); padding-right: 68px; }
+.reg-detail { font-size: 0.77rem; color: var(--muted); margin-top: 3px; }
+.est-tag { display: inline-block; padding: 2px 10px; border-radius: 50px; font-size: 0.67rem; font-weight: 700; margin-top: 5px; }
+.tg-BUENO   { background: #d5edd9; color: #1f6b2a; }
+.tg-REGULAR { background: #fef3d0; color: #7a4f00; }
+.tg-MALO    { background: #fde8e8; color: #8b1a1a; }
 .reg-actions { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; }
 .btn-icon { border: none; border-radius: 8px; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-.toast { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--navy-dk); color: #fff; padding: 11px 24px; border-radius: 50px; transition: transform 0.35s; z-index: 999; }
-.toast.show { transform: translateX(-50%) translateY(0); }
-.modal-overlay { position: fixed; inset: 0; background: rgba(20,24,50,0.65); z-index: 500; display: none; align-items: flex-end; justify-content: center; }
+.btn-edit { background: #dde2f0; color: var(--navy); }
+.btn-del  { background: #f5dede; color: var(--red); }
+
+/* MODAL */
+.modal-overlay { position: fixed; inset: 0; background: rgba(20,24,50,0.65); z-index: 500; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(2px); }
 .modal-overlay.open { display: flex; }
 .modal { background: var(--surface); border-radius: 20px 20px 0 0; padding: 20px 16px 30px; width: 100%; max-width: 540px; }
+
+/* TOAST */
+.toast { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--navy-dk); color: #fff; padding: 11px 24px; border-radius: 50px; transition: transform 0.35s; z-index: 999; }
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* DÍA GRUPO */
+.day-header { display: flex; justify-content: space-between; align-items: center; background: var(--navy); color: #fff; border-radius: 9px; padding: 9px 14px; margin: 15px 0 9px; font-size: 0.8rem; font-weight: 700; }
 </style>
 </head>
 <body>
 
 <header>
   <div class="header-top">
-    <img class="logo-img" src="https://barralesyaccesorios.com.ar/wp-content/uploads/2024/09/Logotipo-Blanco.png" alt="Logo">
+    <div class="logo-wrap"><img class="logo-img" src="https://barralesyaccesorios.com.ar/wp-content/uploads/2024/09/Logotipo-Blanco.png"></div>
     <div class="header-right">
       <div class="h-sub">Sector Madera</div>
       <div class="h-hora" id="hHora">--:--</div>
@@ -73,6 +121,7 @@ input[type="number"], textarea { width: 100%; background: var(--chip-bg); border
 
 <div class="container">
   <div class="pane active" id="pane-nuevo">
+    <div style="height:14px"></div>
     <div class="card">
       <div class="section-label">Producto</div>
       <div class="chips" id="c-producto">
@@ -95,45 +144,58 @@ input[type="number"], textarea { width: 100%; background: var(--chip-bg); border
     <div class="card">
       <div class="section-label">Color</div>
       <div class="chips" id="c-color">
-        <div class="chip" data-val="CEDRO" onclick="sel(this,'color')"><span class="cdot" style="background:#8B3A2A"></span>CEDRO</div>
-        <div class="chip" data-val="NATURAL" onclick="sel(this,'color')"><span class="cdot" style="background:#D4B483"></span>NATURAL</div>
-        <div class="chip" data-val="ROBLE" onclick="sel(this,'color')"><span class="cdot" style="background:#7A5C3A"></span>ROBLE</div>
-        <div class="chip" data-val="NOGAL" onclick="sel(this,'color')"><span class="cdot" style="background:#3E2A1A"></span>NOGAL</div>
+        <div class="chip color-chip" data-val="CEDRO" onclick="sel(this,'color')"><span class="cdot" style="background:#8B3A2A"></span>CEDRO</div>
+        <div class="chip color-chip" data-val="NATURAL" onclick="sel(this,'color')"><span class="cdot" style="background:#D4B483"></span>NATURAL</div>
+        <div class="chip color-chip" data-val="ROBLE" onclick="sel(this,'color')"><span class="cdot" style="background:#7A5C3A"></span>ROBLE</div>
+        <div class="chip color-chip" data-val="NOGAL" onclick="sel(this,'color')"><span class="cdot" style="background:#3E2A1A"></span>NOGAL</div>
       </div>
     </div>
     <div class="card">
-        <label style="font-size:0.7rem; font-weight:700; color:var(--muted)">CANTIDAD</label>
-        <input type="number" id="n-cantidad" placeholder="0" oninput="checkBtn()">
-        <div style="height:15px"></div>
-        <div class="section-label">Estado</div>
-        <div class="chips" id="c-estado">
-          <div class="chip" data-val="BUENO" onclick="sel(this,'estado')">✅ Bueno</div>
-          <div class="chip" data-val="REGULAR" onclick="sel(this,'estado')">⚠️ Regular</div>
-          <div class="chip" data-val="MALO" onclick="sel(this,'estado')">❌ Malo</div>
-        </div>
-        <textarea id="n-obs" rows="2" placeholder="Observaciones..." style="margin-top:10px"></textarea>
+      <div class="input-group"><label>Cantidad</label><input type="number" id="n-cantidad" placeholder="0" oninput="checkBtn()"></div>
+      <div class="section-label" style="margin-top:15px">Estado</div>
+      <div class="chips" id="c-estado">
+        <div class="chip est-b" data-val="BUENO" onclick="sel(this,'estado')">✅ Bueno</div>
+        <div class="chip est-r" data-val="REGULAR" onclick="sel(this,'estado')">⚠️ Regular</div>
+        <div class="chip est-m" data-val="MALO" onclick="sel(this,'estado')">❌ Malo</div>
+      </div>
+      <div class="input-group" style="margin-top:15px"><textarea id="n-obs" rows="2" placeholder="Observaciones opcionales..."></textarea></div>
     </div>
     <button class="btn-main" id="btnReg" onclick="registrar()" disabled>Registrar Recepción</button>
   </div>
 
   <div class="pane" id="pane-hoy">
-    <div id="listaHoy"></div>
-    <button class="btn-xlsx" id="btnXlsxHoy" onclick="descargarXlsx('hoy')" disabled>Descargar Excel Hoy</button>
+    <div style="height:14px"></div>
+    <div class="card">
+      <div class="hist-top"><h2>Hoy</h2><span class="badge" id="badgeHoy">0</span></div>
+      <div id="listaHoy"></div>
+    </div>
+    <button class="btn-xlsx" style="width:100%" id="btnXlsxHoy" onclick="descargarXlsx('hoy')" disabled>⬇️ Descargar Excel Hoy</button>
   </div>
 
   <div class="pane" id="pane-semana">
-    <div id="lista5d"></div>
-    <button class="btn-xlsx" id="btnXlsx5d" onclick="descargarXlsx('semana')" disabled>Descargar Historial 5 Días</button>
+    <div style="height:14px"></div>
+    <div class="card">
+      <div class="hist-top"><h2>Últimos 5 días</h2><span class="badge" id="badge5d">0</span></div>
+      <div id="lista5d"></div>
+    </div>
+    <button class="btn-xlsx" style="width:100%" id="btnXlsx5d" onclick="descargarXlsx('semana')" disabled>⬇️ Descargar Historial (.xlsx)</button>
   </div>
 </div>
 
-<div class="modal-overlay" id="modalOverlay">
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModalDirect()">
   <div class="modal">
-    <h3 style="margin-bottom:15px">Editar Registro</h3>
-    <input type="number" id="m-cantidad" placeholder="Cantidad">
-    <textarea id="m-obs" rows="2" style="margin:10px 0"></textarea>
-    <button class="btn-main" onclick="guardarEdicion()">Guardar</button>
-    <button class="btn-main" style="background:gray; margin-top:5px" onclick="closeModalDirect()">Cancelar</button>
+    <h3 style="font-family:'Playfair Display',serif; margin-bottom:15px">✏️ Editar Registro</h3>
+    <div class="card" style="box-shadow:none; border:1px solid #ddd">
+      <div class="input-group"><label>Cantidad</label><input type="number" id="m-cantidad"></div>
+      <div class="section-label" style="margin-top:15px">Estado</div>
+      <div class="chips" id="m-estado">
+        <div class="chip est-b" data-val="BUENO" onclick="mSel(this,'estado')">✅ Bueno</div>
+        <div class="chip est-r" data-val="REGULAR" onclick="mSel(this,'estado')">⚠️ Regular</div>
+        <div class="chip est-m" data-val="MALO" onclick="mSel(this,'estado')">❌ Malo</div>
+      </div>
+      <div class="input-group" style="margin-top:15px"><textarea id="m-obs" rows="2"></textarea></div>
+    </div>
+    <button class="btn-main" onclick="guardarEdicion()">💾 Guardar Cambios</button>
   </div>
 </div>
 
@@ -141,7 +203,7 @@ input[type="number"], textarea { width: 100%; background: var(--chip-bg); border
 
 <script>
 const FORM = { producto:null, medida:null, color:null, estado:null };
-const EDIT = { id:null, dateKey:null };
+const EDIT = { id:null, dateKey:null, estado:null };
 
 function tick() {
   const n = new Date();
@@ -162,6 +224,10 @@ function showTab(name, btn) {
 function sel(el, g) {
   document.querySelectorAll(`#c-${g} .chip`).forEach(c => c.classList.remove('sel'));
   el.classList.add('sel'); FORM[g] = el.dataset.val; checkBtn();
+}
+function mSel(el, g) {
+  document.querySelectorAll(`#m-${g} .chip`).forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel'); EDIT[g] = el.dataset.val;
 }
 
 function checkBtn() {
@@ -192,54 +258,83 @@ function registrar() {
 function renderHoy() {
   const key = dateToKey(new Date());
   const data = JSON.parse(localStorage.getItem(key) || '[]');
+  document.getElementById('badgeHoy').textContent = data.length;
   document.getElementById('btnXlsxHoy').disabled = data.length === 0;
   document.getElementById('listaHoy').innerHTML = data.map(r => `
     <div class="reg-item">
       <div class="reg-actions">
-        <button class="btn-icon" onclick="eliminar(${r.id},'${key}')">✕</button>
+        <button class="btn-icon btn-edit" onclick="openEdit(${r.id},'${key}')">✏️</button>
+        <button class="btn-icon btn-del" onclick="eliminar(${r.id},'${key}')">✕</button>
       </div>
-      <div class="reg-prod">${r.producto} - ${r.medida}</div>
-      <div class="reg-detail">${r.cantidad}u - ${r.color} - ${r.estado} (${r.hora})</div>
-      ${r.obs ? `<div style="font-size:0.7rem; font-style:italic; color:gray">${r.obs}</div>` : ''}
+      <div class="reg-prod">${r.producto}</div>
+      <div class="reg-detail">${r.cantidad}u · ${r.medida} · ${r.color} · ${r.hora}</div>
+      <span class="est-tag tg-${r.estado}">${r.estado}</span>
+      ${r.obs ? `<div style="font-size:0.7rem; color:gray; font-style:italic; margin-top:4px">${r.obs}</div>` : ''}
     </div>
-  `).join('') || '<p style="text-align:center; padding:20px; color:gray">No hay registros hoy</p>';
+  `).join('') || '<p style="text-align:center; padding:20px; color:gray">Sin registros hoy</p>';
 }
 
 function render5d() {
-  let html = '';
+  let html = '', total = 0;
   for(let i=0; i<5; i++) {
     const d = new Date(); d.setDate(d.getDate()-i);
     const key = dateToKey(d);
     const data = JSON.parse(localStorage.getItem(key) || '[]');
     if(data.length > 0) {
-      html += `<h4 style="margin:10px 0; color:var(--navy)">${d.toLocaleDateString()}</h4>`;
-      html += data.map(r => `<div class="reg-item">${r.producto} (${r.cantidad}u) - ${r.estado}</div>`).join('');
+      total += data.length;
+      html += `<div class="day-header"><span>${d.toLocaleDateString('es-AR',{weekday:'long', day:'numeric'})}</span></div>`;
+      html += data.map(r => `
+        <div class="reg-item">
+          <div class="reg-prod">${r.producto} (${r.cantidad}u)</div>
+          <div class="reg-detail">${r.medida} · ${r.color} · ${r.estado}</div>
+        </div>
+      `).join('');
     }
   }
-  document.getElementById('lista5d').innerHTML = html || '<p style="padding:20px; color:gray">No hay historial</p>';
-  document.getElementById('btnXlsx5d').disabled = html === '';
+  document.getElementById('badge5d').textContent = total;
+  document.getElementById('btnXlsx5d').disabled = total === 0;
+  document.getElementById('lista5d').innerHTML = html || '<p style="text-align:center; padding:20px; color:gray">Sin historial</p>';
+}
+
+function openEdit(id, key) {
+  const reg = JSON.parse(localStorage.getItem(key)).find(r => r.id === id);
+  EDIT.id = id; EDIT.dateKey = key; EDIT.estado = reg.estado;
+  document.getElementById('m-cantidad').value = reg.cantidad;
+  document.getElementById('m-obs').value = reg.obs || '';
+  document.querySelectorAll('#m-estado .chip').forEach(c => c.classList.toggle('sel', c.dataset.val === reg.estado));
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModalDirect() { document.getElementById('modalOverlay').classList.remove('open'); }
+
+function guardarEdicion() {
+  const data = JSON.parse(localStorage.getItem(EDIT.dateKey));
+  const idx = data.findIndex(r => r.id === EDIT.id);
+  data[idx].cantidad = document.getElementById('m-cantidad').value;
+  data[idx].obs = document.getElementById('m-obs').value;
+  data[idx].estado = EDIT.estado;
+  localStorage.setItem(EDIT.dateKey, JSON.stringify(data));
+  closeModalDirect(); renderHoy(); toast("💾 Actualizado");
 }
 
 function eliminar(id, key) {
-  const data = JSON.parse(localStorage.getItem(key) || '[]');
-  localStorage.setItem(key, JSON.stringify(data.filter(r => r.id !== id)));
-  renderHoy();
+  if(confirm('¿Eliminar registro?')) {
+    const data = JSON.parse(localStorage.getItem(key)).filter(r => r.id !== id);
+    localStorage.setItem(key, JSON.stringify(data));
+    renderHoy();
+  }
 }
 
 function descargarXlsx(modo) {
-  let totalData = [];
-  if(modo === 'hoy') {
-    totalData = JSON.parse(localStorage.getItem(dateToKey(new Date())) || '[]');
-  } else {
-    for(let i=0; i<5; i++) {
-      const d = new Date(); d.setDate(d.getDate()-i);
-      totalData = totalData.concat(JSON.parse(localStorage.getItem(dateToKey(d)) || '[]'));
-    }
+  let rows = [];
+  if(modo==='hoy') rows = JSON.parse(localStorage.getItem(dateToKey(new Date()))||'[]');
+  else for(let i=0;i<5;i++){
+    const d=new Date(); d.setDate(d.getDate()-i);
+    rows = rows.concat(JSON.parse(localStorage.getItem(dateToKey(d))||'[]'));
   }
-  const ws = XLSX.utils.json_to_sheet(totalData);
+  const ws = XLSX.utils.json_to_sheet(rows);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Recepcion");
-  XLSX.writeFile(wb, "Recepcion_Barrales.xlsx");
+  XLSX.writeFile(wb, "Recepcion.xlsx");
 }
 
 function toast(m) {
@@ -248,14 +343,12 @@ function toast(m) {
   setTimeout(() => t.classList.remove('show'), 2000);
 }
 
-function closeModalDirect() { document.getElementById('modalOverlay').classList.remove('open'); }
-
-// MOTOR OFFLINE - SERVICE WORKER
+// MOTOR OFFLINE - SERVICE WORKER AL FINAL
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     const swCode = `
-      const cacheName = 'bya-vFinal';
-      const assets = ['./', './index.html', 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'];
+      const cacheName = 'bya-vFinal-Fixed';
+      const assets = ['./', './index.html', 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js', 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Nunito:wght@400;500;600;700&display=swap'];
       self.addEventListener('install', e => { e.waitUntil(caches.open(cacheName).then(c => c.addAll(assets))); });
       self.addEventListener('fetch', e => { e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))); });
     `;
