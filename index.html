@@ -545,6 +545,23 @@ function toast(msg) {
 
 // INIT
 renderHoy();
+  // CÓDIGO PARA FUNCIONAMIENTO OFFLINE
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    const swCode = `
+      const cacheName = 'recepcion-v1';
+      const assets = ['./', './index.html'];
+      self.addEventListener('install', e => {
+        e.waitUntil(caches.open(cacheName).then(cache => cache.addAll(assets)));
+      });
+      self.addEventListener('fetch', e => {
+        e.respondWith(caches.match(e.request).then(res => res || fetch(e.request)));
+      });`;
+    const blob = new Blob([swCode], {type: 'application/javascript'});
+    const workerUrl = URL.createObjectURL(blob);
+    navigator.serviceWorker.register(workerUrl);
+  });
+}
 </script>
 </body>
 </html>
