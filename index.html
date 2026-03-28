@@ -512,20 +512,42 @@ function toast(msg) {
   clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-// MOTOR OFFLINE (SERVICE WORKER)
+// MOTOR OFFLINE - COPIAR ESTO AL FINAL ANTES DEL </script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
+    // Creamos el Service Worker dinámicamente
     const swCode = `
-      const cacheName = 'bya-v1';
-      const assets = ['./', './index.html', 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'];
-      self.addEventListener('install', e => { e.waitUntil(caches.open(cacheName).then(c => c.addAll(assets))); });
-      self.addEventListener('fetch', e => { e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))); });
+      const cacheName = 'bya-v5';
+      const assets = [
+        './',
+        './index.html',
+        'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'
+      ];
+
+      self.addEventListener('install', e => {
+        e.waitUntil(
+          caches.open(cacheName).then(cache => {
+            console.log('Guardando archivos en caché...');
+            return cache.addAll(assets);
+          })
+        );
+      });
+
+      self.addEventListener('fetch', e => {
+        e.respondWith(
+          caches.match(e.request).then(res => {
+            // Si está en caché, lo devuelve. Si no, intenta internet.
+            return res || fetch(e.request);
+          })
+        );
+      });
     `;
     const blob = new Blob([swCode], {type: 'application/javascript'});
-    navigator.serviceWorker.register(URL.createObjectURL(blob));
+    navigator.serviceWorker.register(URL.createObjectURL(blob))
+      .then(() => console.log('App lista para usar sin internet'))
+      .catch(err => console.log('Error al registrar:', err));
   });
 }
-
 renderHoy();
 </script>
 </body>
