@@ -1,0 +1,25 @@
+{
+  "name": "Barrales & Accesorios — Recepción",
+  "short_name": "Recepción B&A",
+  "description": "Sistema de recepción de productos · Sector Madera",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#3d4460",
+  "theme_color": "#3d4460",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "https://barralesyaccesorios.com.ar/wp-content/uploads/2024/09/Logotipo-Blanco.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://barralesyaccesorios.com.ar/wp-content/uploads/2024/09/Logotipo-Blanco.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
