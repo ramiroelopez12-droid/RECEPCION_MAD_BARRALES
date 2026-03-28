@@ -8,41 +8,49 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 :root {
-  --navy: #3d4460; --navy-dk: #2c3050; --navy-mid: #4a5070;
-  --bg: #eef0f5; --surface: #ffffff; --border: #c8ccd8;
-  --accent: #5a6080; --accent-lt: #7a82a0; --text: #1e2238;
-  --muted: #6b7190; --chip-bg: #e4e7f0; --green: #3a7d5a;
-  --orange: #b07820; --red: #b03030; --shadow: 0 3px 16px rgba(30,34,56,0.13);
-  --radius: 14px;
+  --navy:      #3d4460; --navy-dk:   #2c3050; --navy-mid:  #4a5070;
+  --bg:        #eef0f5; --surface:   #ffffff; --border:    #c8ccd8;
+  --accent:    #5a6080; --accent-lt: #7a82a0; --text:      #1e2238;
+  --muted:     #6b7190; --chip-bg:   #e4e7f0; --green:     #3a7d5a;
+  --orange:    #b07820; --red:       #b03030; --shadow:    0 3px 16px rgba(30,34,56,0.13);
+  --radius:    14px;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: var(--bg); color: var(--text); font-family: 'Nunito', sans-serif; min-height: 100vh; padding-bottom: 50px; }
 header { background: var(--navy); position: sticky; top: 0; z-index: 200; box-shadow: 0 3px 18px rgba(20,24,50,0.45); }
 .header-top { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid rgba(255,255,255,0.10); }
-.logo-img { height: 52px; object-fit: contain; }
-.header-right { text-align: right; color: #fff; }
-.h-sub { font-size: 0.62rem; font-weight: 700; opacity: 0.5; text-transform: uppercase; }
+.logo-img  { height: 52px; object-fit: contain; display: block; }
+.header-right { text-align: right; }
+.header-right .h-sub  { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.13em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+.header-right .h-hora { font-size: 1rem; font-weight: 700; color: #fff; line-height: 1.2; }
+.header-right .h-fecha{ font-size: 0.68rem; color: rgba(255,255,255,0.5); }
 .tabs { display: flex; background: var(--navy-dk); }
-.tab-btn { flex: 1; border: none; background: none; padding: 12px; color: rgba(255,255,255,0.4); font-weight: 700; font-size: 0.75rem; text-transform: uppercase; border-bottom: 3px solid transparent; }
-.tab-btn.active { color: #fff; border-bottom-color: #fff; background: rgba(255,255,255,0.05); }
-.container { max-width: 540px; margin: 0 auto; padding: 16px; }
+.tab-btn { flex: 1; border: none; background: none; padding: 10px 2px; font-family: 'Nunito', sans-serif; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: rgba(255,255,255,0.42); cursor: pointer; border-bottom: 3px solid transparent; }
+.tab-btn.active { color: #fff; border-bottom-color: #fff; background: rgba(255,255,255,0.07); }
+.container { max-width: 540px; margin: 0 auto; padding: 16px 13px 0; }
 .pane { display: none; }
 .pane.active { display: block; }
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 15px; margin-bottom: 12px; box-shadow: var(--shadow); }
-.section-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
-.section-label::before { content:''; width: 3px; height: 12px; background: var(--navy); border-radius: 2px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 15px 14px; margin-bottom: 13px; box-shadow: var(--shadow); }
+.section-label { font-size: 0.63rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; display: flex; align-items: center; gap: 7px; }
+.section-label::before { content:''; display: inline-block; width: 3px; height: 12px; background: var(--navy); border-radius: 2px; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-.chip { background: var(--chip-bg); border: 1.5px solid var(--border); border-radius: 50px; padding: 8px 14px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+.chip { background: var(--chip-bg); border: 1.5px solid var(--border); border-radius: 50px; padding: 8px 14px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.15s; color: var(--text); }
 .chip.sel { background: var(--navy); border-color: var(--navy); color: #fff; }
-.cdot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 5px; border: 1px solid rgba(0,0,0,0.1); }
-input[type="number"], textarea { width: 100%; background: var(--chip-bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 12px; font-size: 1rem; outline: none; margin-top: 5px; }
-.btn-main { width: 100%; background: var(--navy); color: #fff; border: none; border-radius: 12px; padding: 16px; font-weight: 700; font-size: 1rem; margin-top: 10px; }
-.btn-main:disabled { background: var(--border); }
-.btn-xlsx { width: 100%; background: #217346; color: #fff; border: none; border-radius: 12px; padding: 15px; font-weight: 700; margin-top: 10px; }
-.reg-item { border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 8px; background: #f9f9f9; position: relative; }
-.reg-prod { font-weight: 700; color: var(--navy); }
-.reg-detail { font-size: 0.8rem; color: var(--muted); }
-.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: #fff; padding: 10px 20px; border-radius: 20px; display: none; z-index: 1000; }
+.cdot { width: 13px; height: 13px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.2); display: inline-block; margin-right: 5px; vertical-align: middle; }
+input[type="number"], textarea { width: 100%; background: var(--chip-bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 11px 14px; font-family: 'Nunito', sans-serif; font-size: 1rem; color: var(--text); outline: none; }
+.btn-main { width: 100%; background: linear-gradient(135deg, var(--navy-mid) 0%, var(--navy-dk) 100%); color: #fff; border: none; border-radius: 12px; padding: 15px; font-family: 'Playfair Display', serif; font-size: 1.05rem; cursor: pointer; box-shadow: 0 4px 14px rgba(40,46,80,0.35); }
+.btn-main:disabled { background: var(--border); box-shadow: none; }
+.btn-xlsx { width: 100%; border: none; border-radius: 12px; padding: 15px; font-weight: 700; background: linear-gradient(135deg, #217346 0%, #185c37 100%); color: #fff; margin-top: 10px; }
+.reg-item { border: 1px solid var(--border); border-radius: 11px; padding: 12px 14px; margin-bottom: 9px; background: var(--chip-bg); position: relative; }
+.reg-prod { font-weight: 700; font-size: 0.93rem; color: var(--navy); }
+.reg-detail { font-size: 0.77rem; color: var(--muted); }
+.reg-actions { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; }
+.btn-icon { border: none; border-radius: 8px; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.toast { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--navy-dk); color: #fff; padding: 11px 24px; border-radius: 50px; transition: transform 0.35s; z-index: 999; }
+.toast.show { transform: translateX(-50%) translateY(0); }
+.modal-overlay { position: fixed; inset: 0; background: rgba(20,24,50,0.65); z-index: 500; display: none; align-items: flex-end; justify-content: center; }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--surface); border-radius: 20px 20px 0 0; padding: 20px 16px 30px; width: 100%; max-width: 540px; }
 </style>
 </head>
 <body>
@@ -52,13 +60,14 @@ input[type="number"], textarea { width: 100%; background: var(--chip-bg); border
     <img class="logo-img" src="https://barralesyaccesorios.com.ar/wp-content/uploads/2024/09/Logotipo-Blanco.png" alt="Logo">
     <div class="header-right">
       <div class="h-sub">Sector Madera</div>
-      <div id="hHora" style="font-weight:700">--:--</div>
+      <div class="h-hora" id="hHora">--:--</div>
+      <div class="h-fecha" id="hFecha">---</div>
     </div>
   </div>
   <div class="tabs">
-    <button class="tab-btn active" onclick="showTab('nuevo',this)">Nuevo</button>
-    <button class="tab-btn" onclick="showTab('hoy',this)">Hoy</button>
-    <button class="tab-btn" onclick="showTab('semana',this)">5 Días</button>
+    <button class="tab-btn active" onclick="showTab('nuevo',this)">➕ Nuevo</button>
+    <button class="tab-btn" onclick="showTab('hoy',this)">📋 Hoy</button>
+    <button class="tab-btn" onclick="showTab('semana',this)">🗂 5 Días</button>
   </div>
 </header>
 
@@ -69,8 +78,10 @@ input[type="number"], textarea { width: 100%; background: var(--chip-bg); border
       <div class="chips" id="c-producto">
         <div class="chip" data-val="SOPORTE BOCHA" onclick="sel(this,'producto')">SOPORTE BOCHA</div>
         <div class="chip" data-val="TERMINAL" onclick="sel(this,'producto')">TERMINAL</div>
+        <div class="chip" data-val="TERMINAL P/ PINO" onclick="sel(this,'producto')">TERMINAL P/ PINO</div>
         <div class="chip" data-val="ARGOLLA" onclick="sel(this,'producto')">ARGOLLA</div>
-        <div class="chip" data-val="BARRAL LISA" onclick="sel(this,'producto')">BARRAL LISA</div>
+        <div class="chip" data-val="BARRAL MAD. LISA" onclick="sel(this,'producto')">BARRAL MAD. LISA</div>
+        <div class="chip" data-val="BARRAL MAD. LISA PINO" onclick="sel(this,'producto')">BARRAL MAD. LISA PINO</div>
       </div>
     </div>
     <div class="card">
@@ -96,10 +107,11 @@ input[type="number"], textarea { width: 100%; background: var(--chip-bg); border
         <div style="height:15px"></div>
         <div class="section-label">Estado</div>
         <div class="chips" id="c-estado">
-          <div class="chip" data-val="BUENO" onclick="sel(this,'estado')">Bueno</div>
-          <div class="chip" data-val="REGULAR" onclick="sel(this,'estado')">Regular</div>
-          <div class="chip" data-val="MALO" onclick="sel(this,'estado')">Malo</div>
+          <div class="chip" data-val="BUENO" onclick="sel(this,'estado')">✅ Bueno</div>
+          <div class="chip" data-val="REGULAR" onclick="sel(this,'estado')">⚠️ Regular</div>
+          <div class="chip" data-val="MALO" onclick="sel(this,'estado')">❌ Malo</div>
         </div>
+        <textarea id="n-obs" rows="2" placeholder="Observaciones..." style="margin-top:10px"></textarea>
     </div>
     <button class="btn-main" id="btnReg" onclick="registrar()" disabled>Registrar Recepción</button>
   </div>
@@ -111,7 +123,17 @@ input[type="number"], textarea { width: 100%; background: var(--chip-bg); border
 
   <div class="pane" id="pane-semana">
     <div id="lista5d"></div>
-    <button class="btn-xlsx" id="btnXlsx5d" onclick="descargarXlsx('semana')" disabled>Descargar Excel 5 Días</button>
+    <button class="btn-xlsx" id="btnXlsx5d" onclick="descargarXlsx('semana')" disabled>Descargar Historial 5 Días</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3 style="margin-bottom:15px">Editar Registro</h3>
+    <input type="number" id="m-cantidad" placeholder="Cantidad">
+    <textarea id="m-obs" rows="2" style="margin:10px 0"></textarea>
+    <button class="btn-main" onclick="guardarEdicion()">Guardar</button>
+    <button class="btn-main" style="background:gray; margin-top:5px" onclick="closeModalDirect()">Cancelar</button>
   </div>
 </div>
 
@@ -119,9 +141,12 @@ input[type="number"], textarea { width: 100%; background: var(--chip-bg); border
 
 <script>
 const FORM = { producto:null, medida:null, color:null, estado:null };
+const EDIT = { id:null, dateKey:null };
 
 function tick() {
-  document.getElementById('hHora').textContent = new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+  const n = new Date();
+  document.getElementById('hHora').textContent = n.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('hFecha').textContent = n.toLocaleDateString('es-AR',{day:'numeric',month:'short'});
 }
 tick(); setInterval(tick, 10000);
 
@@ -148,13 +173,15 @@ function dateToKey(d) { return 'bya_' + d.toISOString().slice(0,10); }
 
 function registrar() {
   const cant = document.getElementById('n-cantidad').value;
+  const obs = document.getElementById('n-obs').value;
+  const now = new Date();
   const reg = {
     id: Date.now(),
-    fecha: new Date().toLocaleDateString('es-AR'),
-    hora: new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}),
-    producto: FORM.producto, medida: FORM.medida, color: FORM.color, cantidad: cant, estado: FORM.estado
+    fecha: now.toLocaleDateString('es-AR'),
+    hora: now.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}),
+    producto: FORM.producto, medida: FORM.medida, color: FORM.color, cantidad: cant, estado: FORM.estado, obs: obs
   };
-  const key = dateToKey(new Date());
+  const key = dateToKey(now);
   const data = JSON.parse(localStorage.getItem(key) || '[]');
   data.unshift(reg);
   localStorage.setItem(key, JSON.stringify(data));
@@ -168,8 +195,12 @@ function renderHoy() {
   document.getElementById('btnXlsxHoy').disabled = data.length === 0;
   document.getElementById('listaHoy').innerHTML = data.map(r => `
     <div class="reg-item">
+      <div class="reg-actions">
+        <button class="btn-icon" onclick="eliminar(${r.id},'${key}')">✕</button>
+      </div>
       <div class="reg-prod">${r.producto} - ${r.medida}</div>
-      <div class="reg-detail">${r.cantidad} unid. - ${r.color} - ${r.estado} (${r.hora})</div>
+      <div class="reg-detail">${r.cantidad}u - ${r.color} - ${r.estado} (${r.hora})</div>
+      ${r.obs ? `<div style="font-size:0.7rem; font-style:italic; color:gray">${r.obs}</div>` : ''}
     </div>
   `).join('') || '<p style="text-align:center; padding:20px; color:gray">No hay registros hoy</p>';
 }
@@ -182,11 +213,17 @@ function render5d() {
     const data = JSON.parse(localStorage.getItem(key) || '[]');
     if(data.length > 0) {
       html += `<h4 style="margin:10px 0; color:var(--navy)">${d.toLocaleDateString()}</h4>`;
-      html += data.map(r => `<div class="reg-item">${r.producto} (${r.cantidad}u)</div>`).join('');
+      html += data.map(r => `<div class="reg-item">${r.producto} (${r.cantidad}u) - ${r.estado}</div>`).join('');
     }
   }
   document.getElementById('lista5d').innerHTML = html || '<p style="padding:20px; color:gray">No hay historial</p>';
   document.getElementById('btnXlsx5d').disabled = html === '';
+}
+
+function eliminar(id, key) {
+  const data = JSON.parse(localStorage.getItem(key) || '[]');
+  localStorage.setItem(key, JSON.stringify(data.filter(r => r.id !== id)));
+  renderHoy();
 }
 
 function descargarXlsx(modo) {
@@ -202,20 +239,22 @@ function descargarXlsx(modo) {
   const ws = XLSX.utils.json_to_sheet(totalData);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Recepcion");
-  XLSX.writeFile(wb, "Recepcion.xlsx");
+  XLSX.writeFile(wb, "Recepcion_Barrales.xlsx");
 }
 
 function toast(m) {
   const t = document.getElementById('toast');
-  t.textContent = m; t.style.display = 'block';
-  setTimeout(() => t.style.display = 'none', 2000);
+  t.textContent = m; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
 }
 
-// MOTOR OFFLINE - CORRECTAMENTE DENTRO DE SCRIPT
+function closeModalDirect() { document.getElementById('modalOverlay').classList.remove('open'); }
+
+// MOTOR OFFLINE - SERVICE WORKER
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     const swCode = `
-      const cacheName = 'bya-v10';
+      const cacheName = 'bya-vFinal';
       const assets = ['./', './index.html', 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'];
       self.addEventListener('install', e => { e.waitUntil(caches.open(cacheName).then(c => c.addAll(assets))); });
       self.addEventListener('fetch', e => { e.respondWith(caches.match(e.request).then(r => r || fetch(e.request))); });
