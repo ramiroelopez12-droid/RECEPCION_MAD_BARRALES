@@ -4,563 +4,196 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Recepción · Barrales & Accesorios</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Rec. Barrales">
+<meta name="theme-color" content="#3d4460">
+<link rel="apple-touch-icon" href="https://barralesyaccesorios.com.ar/wp-content/uploads/2024/09/Logotipo-Blanco.png">
+<link rel="icon" type="image/png" href="https://barralesyaccesorios.com.ar/wp-content/uploads/2024/09/Logotipo-Blanco.png">
+
+<link rel="manifest" href='data:application/json,{"name":"Recepcion Barrales","short_name":"Rec. Barrales","start_url":"./index.html","display":"standalone","background_color":"#eef0f5","theme_color":"#3d4460","icons":[{"src":"https://barralesyaccesorios.com.ar/wp-content/uploads/2024/09/Logotipo-Blanco.png","sizes":"192x192","type":"image/png"}]}'>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
 <style>
 :root {
-  --navy:      #3d4460;
-  --navy-dk:   #2c3050;
-  --navy-mid:  #4a5070;
-  --bg:        #eef0f5;
-  --surface:   #ffffff;
-  --border:    #c8ccd8;
-  --accent:    #5a6080;
-  --accent-lt: #7a82a0;
-  --text:      #1e2238;
-  --muted:     #6b7190;
-  --chip-bg:   #e4e7f0;
-  --green:     #3a7d5a;
-  --orange:    #b07820;
-  --red:       #b03030;
-  --shadow:    0 3px 16px rgba(30,34,56,0.13);
-  --radius:    14px;
+  --navy: #3d4460; --navy-dk: #2c3050; --navy-mid: #4a5070;
+  --bg: #eef0f5; --surface: #ffffff; --border: #c8ccd8;
+  --accent: #5a6080; --text: #1e2238; --muted: #6b7190;
+  --chip-bg: #e4e7f0; --green: #3a7d5a; --orange: #b07820; --red: #b03030;
+  --shadow: 0 3px 16px rgba(30,34,56,0.13); --radius: 14px;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); color: var(--text); font-family: 'Nunito', sans-serif; min-height: 100vh; padding-bottom: 50px; }
+body { 
+  background: var(--bg); 
+  color: var(--text); 
+  /* Fuente del sistema para evitar depender de Google Fonts online */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+  min-height: 100vh; 
+  padding-bottom: 50px; 
+}
 
-/* HEADER */
+/* Estilos de la App */
 header { background: var(--navy); position: sticky; top: 0; z-index: 200; box-shadow: 0 3px 18px rgba(20,24,50,0.45); }
 .header-top { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid rgba(255,255,255,0.10); }
-.logo-wrap { display: flex; align-items: center; }
-.logo-img  { height: 52px; object-fit: contain; display: block; }
-.header-right { text-align: right; }
-.header-right .h-sub  { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.13em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
-.header-right .h-hora { font-size: 1rem; font-weight: 700; color: #fff; line-height: 1.2; }
-.header-right .h-fecha{ font-size: 0.68rem; color: rgba(255,255,255,0.5); }
-
-/* TABS */
+.logo-img { height: 52px; object-fit: contain; }
+.header-right { text-align: right; color: #fff; }
+.h-sub { font-size: 0.62rem; font-weight: 700; opacity: 0.5; text-transform: uppercase; }
 .tabs { display: flex; background: var(--navy-dk); }
-.tab-btn { flex: 1; border: none; background: none; padding: 10px 2px; font-family: 'Nunito', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: rgba(255,255,255,0.42); cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; -webkit-tap-highlight-color: transparent; line-height: 1.3; }
-.tab-btn.active { color: #fff; border-bottom-color: #fff; background: rgba(255,255,255,0.07); }
-
-/* CONTAINER */
-.container { max-width: 540px; margin: 0 auto; padding: 16px 13px 0; }
+.tab-btn { flex: 1; border: none; background: none; padding: 12px; color: rgba(255,255,255,0.5); font-weight: 700; font-size: 0.75rem; text-transform: uppercase; border-bottom: 3px solid transparent; }
+.tab-btn.active { color: #fff; border-bottom-color: #fff; background: rgba(255,255,255,0.05); }
+.container { max-width: 540px; margin: 0 auto; padding: 16px; }
 .pane { display: none; }
 .pane.active { display: block; }
-
-/* CARD */
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 15px 14px; margin-bottom: 13px; box-shadow: var(--shadow); }
-.section-label { font-size: 0.63rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; display: flex; align-items: center; gap: 7px; }
-.section-label::before { content:''; display: inline-block; width: 3px; height: 12px; background: var(--navy); border-radius: 2px; }
-
-/* CHIPS */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 15px; margin-bottom: 12px; box-shadow: var(--shadow); }
+.section-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.section-label::before { content:''; width: 3px; height: 12px; background: var(--navy); border-radius: 2px; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
-.chip { background: var(--chip-bg); border: 1.5px solid var(--border); border-radius: 50px; padding: 8px 14px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.15s; color: var(--text); user-select: none; -webkit-tap-highlight-color: transparent; line-height: 1; }
-.chip:active { transform: scale(0.95); }
+.chip { background: var(--chip-bg); border: 1.5px solid var(--border); border-radius: 50px; padding: 8px 14px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
 .chip.sel { background: var(--navy); border-color: var(--navy); color: #fff; }
-.color-chip { display: flex; align-items: center; gap: 7px; }
-.cdot { width: 13px; height: 13px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.2); flex-shrink: 0; }
-.chip.est-b.sel { background: var(--green);  border-color: var(--green);  color:#fff; }
-.chip.est-r.sel { background: var(--orange); border-color: var(--orange); color:#fff; }
-.chip.est-m.sel { background: var(--red);    border-color: var(--red);    color:#fff; }
-
-/* INPUTS */
-.input-group { margin-bottom: 14px; }
-.input-group:last-child { margin-bottom: 0; }
-.input-group label { display: block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
-input[type="number"], textarea { width: 100%; background: var(--chip-bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 11px 14px; font-family: 'Nunito', sans-serif; font-size: 1rem; color: var(--text); outline: none; transition: border-color 0.15s; }
-input[type="number"]:focus, textarea:focus { border-color: var(--navy); }
-textarea { resize: none; font-size: 0.9rem; }
-
-/* BTN PRINCIPAL */
-.btn-main { width: 100%; background: linear-gradient(135deg, var(--navy-mid) 0%, var(--navy-dk) 100%); color: #fff; border: none; border-radius: 12px; padding: 15px; font-family: 'Playfair Display', serif; font-size: 1.05rem; letter-spacing: 0.04em; cursor: pointer; transition: opacity 0.15s, transform 0.1s; box-shadow: 0 4px 14px rgba(40,46,80,0.35); display: flex; align-items: center; justify-content: center; gap: 8px; }
-.btn-main:active  { transform: scale(0.98); opacity: 0.9; }
-.btn-main:disabled { background: var(--border); color: var(--muted); box-shadow: none; cursor: not-allowed; }
-
-/* BTN XLSX — verde Excel */
-.btn-xlsx { width: 100%; border: none; border-radius: 12px; padding: 15px; font-family: 'Nunito', sans-serif; font-size: 0.98rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 9px; transition: opacity 0.15s, transform 0.1s; background: linear-gradient(135deg, #217346 0%, #185c37 100%); color: #fff; box-shadow: 0 4px 14px rgba(33,115,70,0.35); letter-spacing: 0.02em; }
-.btn-xlsx:active { transform: scale(0.98); opacity: 0.9; }
-.btn-xlsx:disabled { background: var(--border); color: var(--muted); box-shadow: none; cursor: not-allowed; }
-
-/* REGISTROS */
-.hist-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.hist-top h2 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--navy); }
-.badge { background: var(--navy); color: #fff; border-radius: 50px; padding: 3px 12px; font-size: 0.72rem; font-weight: 700; }
-.div-line { height: 1px; background: linear-gradient(90deg,transparent,var(--accent-lt),transparent); border:none; margin: 4px 0 14px; }
-
-.reg-item { border: 1px solid var(--border); border-radius: 11px; padding: 12px 14px; margin-bottom: 9px; background: var(--chip-bg); position: relative; animation: fadeUp 0.25s ease; }
-@keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; } }
-.reg-prod { font-weight: 700; font-size: 0.93rem; color: var(--navy); padding-right: 68px; }
-.reg-detail { font-size: 0.77rem; color: var(--muted); margin-top: 3px; }
-.est-tag { display: inline-block; padding: 2px 10px; border-radius: 50px; font-size: 0.67rem; font-weight: 700; margin-top: 5px; letter-spacing: 0.04em; }
-.tg-BUENO   { background: #d5edd9; color: #1f6b2a; }
-.tg-REGULAR { background: #fef3d0; color: #7a4f00; }
-.tg-MALO    { background: #fde8e8; color: #8b1a1a; }
-.reg-obs { font-size: 0.74rem; color: var(--muted); font-style: italic; margin-top: 4px; }
-.reg-actions { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; }
-.btn-icon { border: none; border-radius: 8px; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-size: 0.82rem; cursor: pointer; transition: background 0.15s; -webkit-tap-highlight-color: transparent; }
-.btn-edit { background: #dde2f0; color: var(--navy); }
-.btn-edit:hover { background: var(--navy); color: #fff; }
-.btn-del  { background: #f5dede; color: var(--red); }
-.btn-del:hover { background: var(--red); color: #fff; }
-.empty-state { text-align: center; color: var(--muted); font-size: 0.84rem; padding: 28px 0; font-style: italic; }
-
-/* DÍA GRUPO (historial) */
-.day-group { margin-bottom: 18px; }
-.day-header { display: flex; justify-content: space-between; align-items: center; background: var(--navy); color: #fff; border-radius: 9px; padding: 9px 14px; margin-bottom: 9px; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.04em; }
-.day-count { font-size: 0.7rem; opacity: 0.65; font-weight: 600; }
-
-/* MODAL */
-.modal-overlay { position: fixed; inset: 0; background: rgba(20,24,50,0.65); z-index: 500; display: none; align-items: flex-end; justify-content: center; backdrop-filter: blur(2px); }
-.modal-overlay.open { display: flex; }
-.modal { background: var(--surface); border-radius: 20px 20px 0 0; padding: 20px 16px 30px; width: 100%; max-width: 540px; max-height: 90vh; overflow-y: auto; animation: slideUp 0.3s cubic-bezier(.34,1.4,.64,1); }
-@keyframes slideUp { from { transform: translateY(100%); } to { transform: none; } }
-.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
-.modal-header h3 { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--navy); }
-.btn-close-modal { border: none; background: var(--chip-bg); border-radius: 50%; width: 32px; height: 32px; font-size: 1rem; cursor: pointer; color: var(--muted); display: flex; align-items: center; justify-content: center; }
-
-/* TOAST */
-.toast { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--navy-dk); color: #fff; padding: 11px 24px; border-radius: 50px; font-weight: 700; font-size: 0.84rem; transition: transform 0.35s cubic-bezier(.34,1.4,.64,1); z-index: 999; white-space: nowrap; box-shadow: 0 5px 20px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.15); }
-.toast.show { transform: translateX(-50%) translateY(0); }
-
-.watermark { text-align: center; padding: 10px 0 0; }
-.watermark img { height: 26px; opacity: 0.13; }
-.help-note { font-size: 0.72rem; color: var(--muted); text-align: center; margin-top: 9px; line-height: 1.6; }
+input[type="number"], textarea { width: 100%; background: var(--chip-bg); border: 1.5px solid var(--border); border-radius: 10px; padding: 12px; font-size: 1rem; outline: none; margin-top: 5px; }
+.btn-main { width: 100%; background: var(--navy); color: #fff; border: none; border-radius: 12px; padding: 16px; font-weight: 700; font-size: 1rem; margin-top: 10px; }
+.btn-main:disabled { background: var(--border); }
+.btn-xlsx { width: 100%; background: #217346; color: #fff; border: none; border-radius: 12px; padding: 15px; font-weight: 700; margin-top: 10px; }
+.reg-item { border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 8px; background: #f9f9f9; position: relative; }
+.reg-prod { font-weight: 700; color: var(--navy); }
+.reg-detail { font-size: 0.8rem; color: var(--muted); }
+.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: #fff; padding: 10px 20px; border-radius: 20px; display: none; z-index: 1000; }
 </style>
 </head>
 <body>
 
 <header>
   <div class="header-top">
-    <div class="logo-wrap">
-      <img class="logo-img" src="https://barralesyaccesorios.com.ar/wp-content/uploads/2024/09/Logotipo-Blanco.png" alt="Barrales & Accesorios"
-        onerror="this.style.display='none';document.getElementById('logoFb').style.display='block'">
-      <div id="logoFb" style="display:none;font-family:'Playfair Display',serif;color:#fff;font-size:1.1rem;font-weight:700;padding-left:4px;">Barrales<br><span style="font-size:0.55rem;letter-spacing:0.2em;opacity:0.6">Y ACCESORIOS</span></div>
-    </div>
+    <img class="logo-img" src="https://barralesyaccesorios.com.ar/wp-content/uploads/2024/09/Logotipo-Blanco.png" alt="Logo">
     <div class="header-right">
-      <div class="h-sub">Sector Madera</div>
-      <div class="h-hora" id="hHora">--:--</div>
-      <div class="h-fecha" id="hFecha">---</div>
+      <div class="h-sub">Madera</div>
+      <div id="hHora" style="font-weight:700">--:--</div>
     </div>
   </div>
   <div class="tabs">
-    <button class="tab-btn active" onclick="showTab('nuevo',this)">➕ Nuevo</button>
-    <button class="tab-btn"        onclick="showTab('hoy',this)">📋 Hoy</button>
-    <button class="tab-btn"        onclick="showTab('semana',this)">🗂 5 Días</button>
+    <button class="tab-btn active" onclick="showTab('nuevo',this)">Nuevo</button>
+    <button class="tab-btn" onclick="showTab('hoy',this)">Hoy</button>
   </div>
 </header>
 
 <div class="container">
-
-  <!-- ══ NUEVO REGISTRO ══ -->
   <div class="pane active" id="pane-nuevo">
-    <div style="height:14px"></div>
-
     <div class="card">
       <div class="section-label">Producto</div>
       <div class="chips" id="c-producto">
-        <div class="chip" data-val="SOPORTE BOCHA"         onclick="sel(this,'producto')">SOPORTE BOCHA</div>
-        <div class="chip" data-val="TERMINAL"              onclick="sel(this,'producto')">TERMINAL</div>
-        <div class="chip" data-val="TERMINAL P/ PINO"      onclick="sel(this,'producto')">TERMINAL P/ PINO</div>
-        <div class="chip" data-val="ARGOLLA"               onclick="sel(this,'producto')">ARGOLLA</div>
-        <div class="chip" data-val="BARRAL MAD. LISA"      onclick="sel(this,'producto')">BARRAL MAD. LISA</div>
-        <div class="chip" data-val="BARRAL MAD. LISA PINO" onclick="sel(this,'producto')">BARRAL MAD. LISA PINO</div>
+        <div class="chip" data-val="SOPORTE" onclick="sel(this,'producto')">SOPORTE</div>
+        <div class="chip" data-val="TERMINAL" onclick="sel(this,'producto')">TERMINAL</div>
+        <div class="chip" data-val="ARGOLLA" onclick="sel(this,'producto')">ARGOLLA</div>
+        <div class="chip" data-val="BARRAL" onclick="sel(this,'producto')">BARRAL</div>
       </div>
     </div>
-
     <div class="card">
-      <div class="section-label">Medida</div>
-      <div class="chips" id="c-medida">
-        <div class="chip" data-val="14 mm" onclick="sel(this,'medida')">14 mm</div>
-        <div class="chip" data-val="22 mm" onclick="sel(this,'medida')">22 mm</div>
-        <div class="chip" data-val="34 mm" onclick="sel(this,'medida')">34 mm</div>
-      </div>
+        <label style="font-size:0.7rem; font-weight:700; color:var(--muted)">CANTIDAD</label>
+        <input type="number" id="n-cantidad" placeholder="0" oninput="checkBtn()">
     </div>
-
     <div class="card">
-      <div class="section-label">Color</div>
-      <div class="chips" id="c-color">
-        <div class="chip color-chip" data-val="CEDRO"   onclick="sel(this,'color')"><span class="cdot" style="background:#8B3A2A"></span>CEDRO</div>
-        <div class="chip color-chip" data-val="NATURAL" onclick="sel(this,'color')"><span class="cdot" style="background:#D4B483"></span>NATURAL</div>
-        <div class="chip color-chip" data-val="ROBLE"   onclick="sel(this,'color')"><span class="cdot" style="background:#7A5C3A"></span>ROBLE</div>
-        <div class="chip color-chip" data-val="NOGAL"   onclick="sel(this,'color')"><span class="cdot" style="background:#3E2A1A"></span>NOGAL</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="input-group">
-        <label>Cantidad recibida</label>
-        <input type="number" id="n-cantidad" min="1" placeholder="0" oninput="checkBtn()">
-      </div>
-      <div class="section-label">Estado / Calidad</div>
+      <div class="section-label">Estado</div>
       <div class="chips" id="c-estado">
-        <div class="chip est-b" data-val="BUENO"   onclick="sel(this,'estado')">✅ Bueno</div>
-        <div class="chip est-r" data-val="REGULAR" onclick="sel(this,'estado')">⚠️ Regular</div>
-        <div class="chip est-m" data-val="MALO"    onclick="sel(this,'estado')">❌ Malo</div>
-      </div>
-      <div class="input-group" style="margin-top:14px">
-        <label>Observaciones (opcional)</label>
-        <textarea id="n-obs" rows="2" placeholder="Ej: llegaron con golpes en el embalaje…"></textarea>
+        <div class="chip" data-val="BUENO" onclick="sel(this,'estado')">Bueno</div>
+        <div class="chip" data-val="REGULAR" onclick="sel(this,'estado')">Regular</div>
+        <div class="chip" data-val="MALO" onclick="sel(this,'estado')">Malo</div>
       </div>
     </div>
-
-    <button class="btn-main" id="btnReg" onclick="registrar()" disabled>Registrar Recepción</button>
-    <div style="height:8px"></div>
-    <div class="watermark">
-      <img src="https://barralesyaccesorios.com.ar/wp-content/uploads/2024/09/Logotipo-Blanco.png" alt="">
-    </div>
+    <button class="btn-main" id="btnReg" onclick="registrar()" disabled>Registrar</button>
   </div>
 
-  <!-- ══ HOY ══ -->
   <div class="pane" id="pane-hoy">
-    <div style="height:14px"></div>
-    <div class="card">
-      <div class="hist-top">
-        <h2>Registros de hoy</h2>
-        <span class="badge" id="badgeHoy">0</span>
-      </div>
-      <hr class="div-line">
-      <div id="listaHoy"><div class="empty-state">Todavía no hay registros hoy.</div></div>
-    </div>
-    <button class="btn-xlsx" id="btnXlsxHoy" onclick="descargarXlsx('hoy')" disabled>
-      ⬇️ &nbsp;Descargar registros de hoy (.xlsx)
-    </button>
-    <p class="help-note">Descargá el archivo y mandalo por WhatsApp al terminar la jornada 📲</p>
-  </div>
-
-  <!-- ══ 5 DÍAS ══ -->
-  <div class="pane" id="pane-semana">
-    <div style="height:14px"></div>
-    <div class="card">
-      <div class="hist-top">
-        <h2>Últimos 5 días</h2>
-        <span class="badge" id="badge5d">0</span>
-      </div>
-      <hr class="div-line">
-      <div id="lista5d"><div class="empty-state">No hay registros en los últimos 5 días.</div></div>
-    </div>
-    <button class="btn-xlsx" id="btnXlsx5d" onclick="descargarXlsx('semana')" disabled>
-      ⬇️ &nbsp;Descargar historial 5 días (.xlsx)
-    </button>
-    <p class="help-note">Los registros de más de 5 días se borran automáticamente 🗑</p>
-  </div>
-
-</div>
-
-<!-- MODAL EDICIÓN -->
-<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
-  <div class="modal">
-    <div class="modal-header">
-      <h3>✏️ Editar Registro</h3>
-      <button class="btn-close-modal" onclick="closeModalDirect()">✕</button>
-    </div>
-    <div class="card" style="margin-bottom:11px;box-shadow:none;">
-      <div class="section-label">Producto</div>
-      <div class="chips" id="m-producto">
-        <div class="chip" data-val="SOPORTE BOCHA"         onclick="mSel(this,'producto')">SOPORTE BOCHA</div>
-        <div class="chip" data-val="TERMINAL"              onclick="mSel(this,'producto')">TERMINAL</div>
-        <div class="chip" data-val="TERMINAL P/ PINO"      onclick="mSel(this,'producto')">TERMINAL P/ PINO</div>
-        <div class="chip" data-val="ARGOLLA"               onclick="mSel(this,'producto')">ARGOLLA</div>
-        <div class="chip" data-val="BARRAL MAD. LISA"      onclick="mSel(this,'producto')">BARRAL MAD. LISA</div>
-        <div class="chip" data-val="BARRAL MAD. LISA PINO" onclick="mSel(this,'producto')">BARRAL MAD. LISA PINO</div>
-      </div>
-    </div>
-    <div class="card" style="margin-bottom:11px;box-shadow:none;">
-      <div class="section-label">Medida</div>
-      <div class="chips" id="m-medida">
-        <div class="chip" data-val="14 mm" onclick="mSel(this,'medida')">14 mm</div>
-        <div class="chip" data-val="22 mm" onclick="mSel(this,'medida')">22 mm</div>
-        <div class="chip" data-val="34 mm" onclick="mSel(this,'medida')">34 mm</div>
-      </div>
-    </div>
-    <div class="card" style="margin-bottom:11px;box-shadow:none;">
-      <div class="section-label">Color</div>
-      <div class="chips" id="m-color">
-        <div class="chip color-chip" data-val="CEDRO"   onclick="mSel(this,'color')"><span class="cdot" style="background:#8B3A2A"></span>CEDRO</div>
-        <div class="chip color-chip" data-val="NATURAL" onclick="mSel(this,'color')"><span class="cdot" style="background:#D4B483"></span>NATURAL</div>
-        <div class="chip color-chip" data-val="ROBLE"   onclick="mSel(this,'color')"><span class="cdot" style="background:#7A5C3A"></span>ROBLE</div>
-        <div class="chip color-chip" data-val="NOGAL"   onclick="mSel(this,'color')"><span class="cdot" style="background:#3E2A1A"></span>NOGAL</div>
-      </div>
-    </div>
-    <div class="card" style="margin-bottom:11px;box-shadow:none;">
-      <div class="input-group">
-        <label>Cantidad</label>
-        <input type="number" id="m-cantidad" min="1">
-      </div>
-      <div class="section-label">Estado / Calidad</div>
-      <div class="chips" id="m-estado">
-        <div class="chip est-b" data-val="BUENO"   onclick="mSel(this,'estado')">✅ Bueno</div>
-        <div class="chip est-r" data-val="REGULAR" onclick="mSel(this,'estado')">⚠️ Regular</div>
-        <div class="chip est-m" data-val="MALO"    onclick="mSel(this,'estado')">❌ Malo</div>
-      </div>
-      <div class="input-group" style="margin-top:14px">
-        <label>Observaciones</label>
-        <textarea id="m-obs" rows="2"></textarea>
-      </div>
-    </div>
-    <button class="btn-main" onclick="guardarEdicion()">💾 Guardar Cambios</button>
+    <div id="listaHoy"></div>
+    <button class="btn-xlsx" id="btnXlsx" onclick="descargarXlsx()" disabled>Descargar Excel</button>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-const FORM = { producto:null, medida:null, color:null, estado:null };
-const EDIT = { id:null, dateKey:null, producto:null, medida:null, color:null, estado:null };
+const FORM = { producto:null, estado:null };
 
-// RELOJ
 function tick() {
-  const n = new Date();
-  document.getElementById('hHora').textContent  = n.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
-  document.getElementById('hFecha').textContent = n.toLocaleDateString('es-AR',{weekday:'short',day:'numeric',month:'short'});
+  document.getElementById('hHora').textContent = new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
 }
 tick(); setInterval(tick, 10000);
 
-// TABS
 function showTab(name, btn) {
   document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('pane-' + name).classList.add('active');
   btn.classList.add('active');
-  if (name === 'hoy')    renderHoy();
-  if (name === 'semana') render5d();
+  if(name === 'hoy') renderHoy();
 }
 
-// CHIPS FORMULARIO
 function sel(el, g) {
   document.querySelectorAll(`#c-${g} .chip`).forEach(c => c.classList.remove('sel'));
   el.classList.add('sel'); FORM[g] = el.dataset.val; checkBtn();
 }
+
 function checkBtn() {
-  const cant = parseInt(document.getElementById('n-cantidad').value);
-  document.getElementById('btnReg').disabled =
-    !(FORM.producto && FORM.medida && FORM.color && FORM.estado && cant > 0);
+  const cant = document.getElementById('n-cantidad').value;
+  document.getElementById('btnReg').disabled = !(FORM.producto && FORM.estado && cant > 0);
 }
 
-// CHIPS MODAL
-function mSel(el, g) {
-  document.querySelectorAll(`#m-${g} .chip`).forEach(c => c.classList.remove('sel'));
-  el.classList.add('sel'); EDIT[g] = el.dataset.val;
-}
-
-// STORAGE
-function dateToKey(d) { return 'bya_' + d.toISOString().slice(0,10); }
-function todayKey()   { return dateToKey(new Date()); }
-function getByKey(k)  { try { return JSON.parse(localStorage.getItem(k)||'[]'); } catch { return []; } }
-function saveByKey(k,a){ localStorage.setItem(k, JSON.stringify(a)); }
-
-// Últimos N días (hoy primero)
-function lastNKeys(n) {
-  const keys = [];
-  for (let i = 0; i < n; i++) {
-    const d = new Date(); d.setDate(d.getDate() - i);
-    keys.push(dateToKey(d));
-  }
-  return keys;
-}
-
-// Etiqueta legible de una clave
-function keyToLabel(key) {
-  const iso = key.replace('bya_','');
-  const [y,m,d] = iso.split('-').map(Number);
-  const date = new Date(y, m-1, d);
-  const hoy  = new Date(); hoy.setHours(0,0,0,0);
-  const ayer = new Date(hoy); ayer.setDate(hoy.getDate()-1);
-  if (date.toDateString() === hoy.toDateString())  return 'Hoy · '  + date.toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'});
-  if (date.toDateString() === ayer.toDateString()) return 'Ayer · ' + date.toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'});
-  return date.toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-}
-
-// AUTO-PURGE: borra registros de más de 5 días
-function purgeOld() {
-  const valid = new Set(lastNKeys(5));
-  Object.keys(localStorage).forEach(k => {
-    if (k.startsWith('bya_') && !valid.has(k)) localStorage.removeItem(k);
-  });
-}
-purgeOld();
-
-// REGISTRAR
 function registrar() {
-  const cant = parseInt(document.getElementById('n-cantidad').value);
-  const obs  = document.getElementById('n-obs').value.trim();
-  const now  = new Date();
-  const reg  = {
+  const cant = document.getElementById('n-cantidad').value;
+  const reg = {
     id: Date.now(),
-    fecha: now.toLocaleDateString('es-AR'),
-    hora:  now.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}),
-    producto: FORM.producto, medida: FORM.medida,
-    color: FORM.color, cantidad: cant,
-    estado: FORM.estado, obs
+    hora: new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}),
+    producto: FORM.producto,
+    cantidad: cant,
+    estado: FORM.estado
   };
-  const arr = getByKey(todayKey());
-  arr.unshift(reg);
-  saveByKey(todayKey(), arr);
-  toast('✅ Recepción registrada');
-  resetForm();
-  // actualizar badge de hoy si estamos en otra pestaña
-  document.getElementById('badgeHoy').textContent = arr.length;
-}
-function resetForm() {
-  document.querySelectorAll('#pane-nuevo .chip').forEach(c => c.classList.remove('sel'));
-  FORM.producto = FORM.medida = FORM.color = FORM.estado = null;
-  document.getElementById('n-cantidad').value = '';
-  document.getElementById('n-obs').value = '';
-  document.getElementById('btnReg').disabled = true;
+  const hoy = JSON.parse(localStorage.getItem('hoy') || '[]');
+  hoy.unshift(reg);
+  localStorage.setItem('hoy', JSON.stringify(hoy));
+  toast("✅ Registrado");
+  location.reload(); // Recarga para asegurar que el storage se limpie
 }
 
-// RENDER HOY
 function renderHoy() {
-  const arr = getByKey(todayKey());
-  document.getElementById('badgeHoy').textContent = arr.length;
-  document.getElementById('btnXlsxHoy').disabled = arr.length === 0;
-  const el = document.getElementById('listaHoy');
-  el.innerHTML = arr.length
-    ? arr.map(r => regHTML(r, todayKey())).join('')
-    : '<div class="empty-state">Todavía no hay registros hoy.</div>';
-}
-
-// RENDER 5 DÍAS
-function render5d() {
-  const keys = lastNKeys(5);
-  let total = 0, html = '';
-  keys.forEach(key => {
-    const arr = getByKey(key);
-    if (!arr.length) return;
-    total += arr.length;
-    html += `<div class="day-group">
-      <div class="day-header">
-        <span>${keyToLabel(key)}</span>
-        <span class="day-count">${arr.length} registro${arr.length!==1?'s':''}</span>
-      </div>
-      ${arr.map(r => regHTML(r, key)).join('')}
-    </div>`;
-  });
-  document.getElementById('badge5d').textContent = total;
-  document.getElementById('btnXlsx5d').disabled = total === 0;
-  document.getElementById('lista5d').innerHTML = html ||
-    '<div class="empty-state">No hay registros en los últimos 5 días.</div>';
-}
-
-// HTML REGISTRO
-function regHTML(r, key) {
-  return `<div class="reg-item">
-    <div class="reg-actions">
-      <button class="btn-icon btn-edit" onclick="openEdit(${r.id},'${key}')">✏️</button>
-      <button class="btn-icon btn-del"  onclick="eliminar(${r.id},'${key}')">✕</button>
+  const hoy = JSON.parse(localStorage.getItem('hoy') || '[]');
+  const lista = document.getElementById('listaHoy');
+  document.getElementById('btnXlsx').disabled = hoy.length === 0;
+  lista.innerHTML = hoy.map(r => `
+    <div class="reg-item">
+      <div class="reg-prod">${r.producto}</div>
+      <div class="reg-detail">${r.cantidad} unid. - ${r.estado} (${r.hora})</div>
     </div>
-    <div class="reg-prod">${r.producto}</div>
-    <div class="reg-detail"><strong>${r.cantidad}</strong> unid. · ${r.medida} · ${r.color} · ${r.hora}</div>
-    <span class="est-tag tg-${r.estado}">${r.estado}</span>
-    ${r.obs ? `<div class="reg-obs">${r.obs}</div>` : ''}
-  </div>`;
+  `).join('') || '<p style="text-align:center; padding:20px; color:gray">No hay registros</p>';
 }
 
-function eliminar(id, key) {
-  saveByKey(key, getByKey(key).filter(r => r.id !== id));
-  const active = document.querySelector('.pane.active').id;
-  if (active === 'pane-hoy')    renderHoy();
-  if (active === 'pane-semana') render5d();
-  toast('Registro eliminado');
-}
-
-// MODAL
-function openEdit(id, key) {
-  const reg = getByKey(key).find(r => r.id === id); if (!reg) return;
-  EDIT.id = id; EDIT.dateKey = key;
-  EDIT.producto = reg.producto; EDIT.medida = reg.medida;
-  EDIT.color = reg.color; EDIT.estado = reg.estado;
-  ['producto','medida','color','estado'].forEach(g => {
-    document.querySelectorAll(`#m-${g} .chip`).forEach(c =>
-      c.classList.toggle('sel', c.dataset.val === reg[g]));
-  });
-  document.getElementById('m-cantidad').value = reg.cantidad;
-  document.getElementById('m-obs').value = reg.obs || '';
-  document.getElementById('modalOverlay').classList.add('open');
-}
-function closeModal(e) { if (e.target===document.getElementById('modalOverlay')) closeModalDirect(); }
-function closeModalDirect() { document.getElementById('modalOverlay').classList.remove('open'); }
-function guardarEdicion() {
-  const cant = parseInt(document.getElementById('m-cantidad').value);
-  const obs  = document.getElementById('m-obs').value.trim();
-  if (!EDIT.producto||!EDIT.medida||!EDIT.color||!EDIT.estado||!(cant>0)) { toast('⚠️ Completá todos los campos'); return; }
-  saveByKey(EDIT.dateKey, getByKey(EDIT.dateKey).map(r => r.id!==EDIT.id ? r :
-    {...r, producto:EDIT.producto, medida:EDIT.medida, color:EDIT.color, estado:EDIT.estado, cantidad:cant, obs}));
-  closeModalDirect();
-  const active = document.querySelector('.pane.active').id;
-  if (active === 'pane-hoy')    renderHoy();
-  if (active === 'pane-semana') render5d();
-  toast('💾 Registro actualizado');
-}
-
-// DESCARGAR XLSX
-function descargarXlsx(modo) {
-  let rows = [];
-  if (modo === 'hoy') {
-    rows = getByKey(todayKey());
-  } else {
-    // cronológico: más viejo primero
-    lastNKeys(5).reverse().forEach(key => rows = rows.concat(getByKey(key)));
-  }
-  if (!rows.length) { toast('No hay registros para descargar'); return; }
-
-  const header = ['Fecha','Hora','Producto','Medida','Color','Cantidad','Estado','Observaciones'];
-  const wsData = [header, ...rows.map(r =>
-    [r.fecha, r.hora, r.producto, r.medida, r.color, r.cantidad, r.estado, r.obs||'']
-  )];
-
-  const ws = XLSX.utils.aoa_to_sheet(wsData);
-
-  // Ancho de columnas
-  ws['!cols'] = [{wch:12},{wch:8},{wch:24},{wch:9},{wch:10},{wch:10},{wch:10},{wch:32}];
-
-  // Estilo encabezado
-  header.forEach((_, i) => {
-    const ref = XLSX.utils.encode_cell({r:0, c:i});
-    if (ws[ref]) ws[ref].s = {
-      fill: { patternType:'solid', fgColor:{ rgb:'3D4460' } },
-      font: { bold:true, color:{ rgb:'FFFFFF' } },
-      alignment: { horizontal:'center' }
-    };
-  });
-
+function descargarXlsx() {
+  const hoy = JSON.parse(localStorage.getItem('hoy') || '[]');
+  const ws = XLSX.utils.json_to_sheet(hoy);
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, modo === 'hoy' ? 'Hoy' : 'Historial 5 días');
-
-  const fecha = new Date().toLocaleDateString('es-AR').replace(/\//g,'-');
-  const filename = modo === 'hoy'
-    ? `Recepciones_${fecha}.xlsx`
-    : `Historial_5dias_${fecha}.xlsx`;
-
-  XLSX.writeFile(wb, filename);
-  toast('📥 Descargando ' + filename);
+  XLSX.utils.book_append_sheet(wb, ws, "Recepcion");
+  XLSX.writeFile(wb, "Recepcion_Hoy.xlsx");
 }
 
-// TOAST
-function toast(msg) {
+function toast(m) {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2800);
+  t.textContent = m; t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 2000);
 }
 
-// INIT
-renderHoy();
-  // CÓDIGO PARA FUNCIONAMIENTO OFFLINE
+// SERVICE WORKER PARA MODO OFFLINE
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    const swCode = `
-      const cacheName = 'recepcion-v1';
-      const assets = ['./', './index.html'];
-      self.addEventListener('install', e => {
-        e.waitUntil(caches.open(cacheName).then(cache => cache.addAll(assets)));
-      });
-      self.addEventListener('fetch', e => {
-        e.respondWith(caches.match(e.request).then(res => res || fetch(e.request)));
-      });`;
-    const blob = new Blob([swCode], {type: 'application/javascript'});
-    const workerUrl = URL.createObjectURL(blob);
-    navigator.serviceWorker.register(workerUrl);
-  });
+  const swCode = `
+    const cacheName = 'v3';
+    self.addEventListener('install', e => {
+      e.waitUntil(caches.open(cacheName).then(cache => cache.addAll(['./', './index.html', 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js'])));
+    });
+    self.addEventListener('fetch', e => {
+      e.respondWith(caches.match(e.request).then(res => res || fetch(e.request)));
+    });
+  `;
+  const blob = new Blob([swCode], {type: 'application/javascript'});
+  navigator.serviceWorker.register(URL.createObjectURL(blob));
 }
 </script>
 </body>
