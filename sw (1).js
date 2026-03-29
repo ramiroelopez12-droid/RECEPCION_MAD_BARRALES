@@ -1,5 +1,5 @@
 // ── Barrales & Accesorios · Service Worker ──────────────────────
-const CACHE = 'bya-v4';
+const CACHE = 'bya-v5';
 
 const ASSETS = [
   './',
