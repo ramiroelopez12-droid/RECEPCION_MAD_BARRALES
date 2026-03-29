@@ -372,7 +372,12 @@ function mSel(el, g) {
 }
 
 // ── STORAGE ───────────────────────────────────────────────────
-function dateToKey(d) { return 'bya_' + d.toISOString().slice(0,10); }
+function dateToKey(d) {
+  const y   = d.getFullYear();
+  const m   = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return 'bya_' + y + '-' + m + '-' + day;
+}
 function todayKey()   { return dateToKey(new Date()); }
 function getByKey(k)  { try { return JSON.parse(localStorage.getItem(k) || '[]'); } catch { return []; } }
 function saveByKey(k,a){ localStorage.setItem(k, JSON.stringify(a)); }
